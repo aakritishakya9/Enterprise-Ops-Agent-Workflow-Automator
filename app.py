@@ -122,9 +122,10 @@ with st.sidebar:
         model_choice = st.selectbox("Model", ["gpt-4o-mini", "gpt-4o"])
 
     st.divider()
-    st.subheader("2. Enterprise Scenario / Source")
-    template_choices = list(TEMPLATES.keys()) + ["Custom Text Notes", "🎙️ Audio Recording / Upload"]
-    selected_scenario = st.selectbox("Select Input Source", template_choices, index=0)
+    st.subheader("2. AI Fluency Architecture")
+    st.caption("• 4-Agent Coordinated Swarm")
+    st.caption("• Live Microphone Voice Ingestion")
+    st.caption("• Zero-Hallucination JSON Schemas")
 
     st.divider()
     st.markdown("### 🏢 Executive Pillars")
@@ -154,44 +155,97 @@ st.write("")
 # ----------------- INPUT INGESTION MODES -----------------
 transcript_input = ""
 
-if selected_scenario == "🎙️ Audio Recording / Upload":
-    st.info("🎙️ **Direct Audio Ingestion Mode:** Upload a meeting audio file or record audio in your browser:")
-    audio_col1, audio_col2 = st.columns([1, 1])
+st.markdown("### 📥 Step 1: Provide Meeting Input")
+input_mode_tabs = st.radio(
+    "Select Your Input Mode:",
+    ["🎙️ Live Microphone Voice Recording", "📁 Upload Audio File (.wav/.mp3)", "📝 Preloaded Scenarios & Notes"],
+    horizontal=True,
+    index=0
+)
+
+if input_mode_tabs == "🎙️ Live Microphone Voice Recording":
+    st.markdown('''
+    <div style="background:#EFF6FF; border: 1px solid #BFDBFE; padding: 14px; border-radius: 8px; margin-bottom: 12px;">
+        <b style="color:#1E40AF; font-size:1.05rem;">🎙️ Direct Microphone Voice Ingestion</b>
+        <div style="font-size:0.88rem; color:#1E3A8A; margin-top:4px;">
+            Click the red record button below to speak your meeting dialogue or action items directly into your laptop microphone!
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
     
-    with audio_col1:
-        uploaded_audio = st.file_uploader("Upload Meeting Recording (.mp3, .wav, .m4a)", type=["mp3", "wav", "m4a", "ogg"])
+    recorded_audio = st.audio_input("Record your voice:")
     
-    with audio_col2:
-        st.write("Or use pre-recorded scenario audio simulation:")
-        preset_audio = st.selectbox("Sample Audio Files", [
+    if recorded_audio is not None:
+        st.audio(recorded_audio)
+        audio_proc = AudioProcessor(api_key=api_key)
+        with st.spinner("🎙️ Transcribing live microphone speech..."):
+            transcript_input = audio_proc.transcribe(recorded_audio.getvalue(), file_name="live_microphone_recording.wav")
+        st.success("Captured and transcribed live microphone recording!")
+    else:
+        st.caption("💡 No microphone available right now? Select a pre-recorded audio sample below:")
+        sample_choice = st.selectbox("Pre-recorded Audio Sample", [
             "fintech_onboarding_call_recording.wav",
             "production_incident_debrief.wav",
             "executive_strategy_sync.wav"
         ])
-    
+        audio_proc = AudioProcessor(api_key=api_key)
+        transcript_input = audio_proc.transcribe(b"", file_name=sample_choice)
+
+    with st.expander("📝 View & Edit Transcribed Voice Text", expanded=True):
+        transcript_input = st.text_area("Transcribed Dialogue", value=transcript_input, height=150)
+
+elif input_mode_tabs == "📁 Upload Audio File (.wav/.mp3)":
+    st.markdown('''
+    <div style="background:#F0FDF4; border: 1px solid #BBF7D0; padding: 14px; border-radius: 8px; margin-bottom: 12px;">
+        <b style="color:#166534; font-size:1.05rem;">📁 Upload Audio File</b>
+        <div style="font-size:0.88rem; color:#14532D; margin-top:4px;">
+            Drop an audio recording (.wav, .mp3, .m4a) from Zoom, Google Meet, or your phone.
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+    uploaded_audio = st.file_uploader("Upload Meeting Audio", type=["wav", "mp3", "m4a", "ogg"])
     if uploaded_audio:
         st.audio(uploaded_audio)
         audio_proc = AudioProcessor(api_key=api_key)
-        with st.spinner("🎙️ Transcribing meeting audio with speech-to-text engine..."):
+        with st.spinner(f"🎙️ Transcribing {uploaded_audio.name}..."):
             transcript_input = audio_proc.transcribe(uploaded_audio.getvalue(), file_name=uploaded_audio.name)
-            st.success("Transcription complete!")
+        st.success(f"Transcribed {uploaded_audio.name} successfully!")
     else:
+        sample_choice = st.selectbox("Or select pre-recorded enterprise audio:", [
+            "fintech_onboarding_call_recording.wav",
+            "production_incident_debrief.wav",
+            "executive_strategy_sync.wav"
+        ])
         audio_proc = AudioProcessor(api_key=api_key)
-        transcript_input = audio_proc.transcribe(b"", file_name=preset_audio)
-        
-    with st.expander("📝 View Audio Transcription", expanded=True):
-        transcript_input = st.text_area("Transcribed Text", value=transcript_input, height=180)
+        transcript_input = audio_proc.transcribe(b"", file_name=sample_choice)
 
-elif selected_scenario in TEMPLATES:
-    t_info = TEMPLATES[selected_scenario]
-    with st.expander("📝 Scenario Context & Dialogue Transcript", expanded=True):
-        st.info(f"**Scenario Context:** {t_info['description']}\n\n**Stakeholders:** {', '.join(t_info['participants'])}")
-        transcript_input = st.text_area("Transcript Content", value=t_info["transcript"], height=200)
+    with st.expander("📝 View & Edit Transcribed Audio Text", expanded=True):
+        transcript_input = st.text_area("Transcribed Dialogue", value=transcript_input, height=150)
 
 else:
-    with st.expander("📝 Custom Meeting Notes / Dialogue", expanded=True):
-        st.info("Paste your raw meeting notes, audio transcripts, or chat logs below:")
-        transcript_input = st.text_area("Custom Transcript Content", value="[00:00] Alice: We agreed to launch the customer data export API by next Tuesday. Bob will handle the OAuth2 token validation. Sarah will review the security compliance audit report.", height=180)
+    st.markdown('''
+    <div style="background:#F8FAFC; border: 1px solid #E2E8F0; padding: 14px; border-radius: 8px; margin-bottom: 12px;">
+        <b style="color:#1E293B; font-size:1.05rem;">📝 Preloaded Scenarios & Text Notes</b>
+        <div style="font-size:0.88rem; color:#475569; margin-top:4px;">
+            Select a realistic enterprise transcript or type custom meeting notes.
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+    selected_scenario = st.selectbox("Select Enterprise Scenario", list(TEMPLATES.keys()) + ["Custom Meeting Notes"], index=0)
+
+    if selected_scenario in TEMPLATES:
+        t_info = TEMPLATES[selected_scenario]
+        with st.expander(f"📝 {selected_scenario} — Dialogue Transcript", expanded=True):
+            context_str = str(t_info.get('description', ''))
+            part_str = ', '.join(t_info.get('participants', []))
+            st.info(f"**Context:** {context_str} | **Stakeholders:** {part_str}")
+            transcript_input = st.text_area("Transcript Content", value=t_info["transcript"], height=180)
+    else:
+        with st.expander("📝 Custom Meeting Notes / Dialogue", expanded=True):
+            st.info("Paste your raw meeting notes, audio transcripts, or chat logs below:")
+            transcript_input = st.text_area("Custom Transcript Content", value="[00:00] Alice: We agreed to launch the customer data export API by next Tuesday. Bob will handle the OAuth2 token validation. Sarah will review the security compliance audit report.", height=180)
 
 # Run Button
 run_col1, run_col2 = st.columns([1, 4])
