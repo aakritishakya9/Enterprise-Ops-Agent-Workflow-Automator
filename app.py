@@ -1,6 +1,6 @@
 """
 SyncOps AI - Enterprise Meeting-to-SOP & Workflow Automation Agent
-Enterprise Edition: Ultra-Modern SaaS Dark UI with Glassmorphism, Micro-Animations, and High-Contrast Typography.
+Dynamic Enterprise Edition: Zero fake hardcoded values, real-time metrics, clean minimal SaaS UI.
 """
 
 import streamlit as st
@@ -45,9 +45,9 @@ st.markdown("""
 
     /* Hero Header */
     .hero-container {
-        padding: 10px 0px 24px 0px;
+        padding: 6px 0px 18px 0px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        margin-bottom: 24px;
+        margin-bottom: 20px;
     }
     .hero-pill {
         display: inline-flex;
@@ -56,8 +56,8 @@ st.markdown("""
         background: rgba(59, 130, 246, 0.12);
         border: 1px solid rgba(59, 130, 246, 0.35);
         border-radius: 9999px;
-        padding: 5px 14px;
-        margin-bottom: 12px;
+        padding: 4px 14px;
+        margin-bottom: 10px;
     }
     .pulse-dot {
         width: 8px;
@@ -72,18 +72,18 @@ st.markdown("""
         50% { opacity: 0.5; transform: scale(0.85); }
     }
     .hero-pill-text {
-        font-size: 0.75rem;
+        font-size: 0.74rem;
         font-weight: 700;
         letter-spacing: 0.8px;
         color: #60A5FA;
         text-transform: uppercase;
     }
     .hero-title {
-        font-size: 2.6rem;
+        font-size: 2.4rem;
         font-weight: 800;
         letter-spacing: -0.8px;
         color: #FFFFFF;
-        margin: 0 0 8px 0;
+        margin: 0 0 6px 0;
         line-height: 1.15;
     }
     .gradient-text {
@@ -92,15 +92,10 @@ st.markdown("""
         -webkit-text-fill-color: transparent;
     }
     .hero-subtitle {
-        font-size: 1.12rem;
+        font-size: 1.05rem;
         font-weight: 500;
         color: #94A3B8;
         max-width: 900px;
-        margin-bottom: 6px;
-    }
-    .hero-description {
-        font-size: 0.9rem;
-        color: #64748B;
         margin: 0;
     }
 
@@ -108,15 +103,15 @@ st.markdown("""
     .stat-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 14px;
-        margin-bottom: 24px;
+        gap: 12px;
+        margin-bottom: 22px;
     }
     .stat-card {
         background: rgba(17, 24, 39, 0.65);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
-        padding: 16px 18px;
+        border-radius: 10px;
+        padding: 14px 16px;
         transition: transform 0.2s ease, border-color 0.2s ease;
     }
     .stat-card:hover {
@@ -124,7 +119,7 @@ st.markdown("""
         transform: translateY(-2px);
     }
     .stat-label {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -132,16 +127,16 @@ st.markdown("""
         margin-bottom: 4px;
     }
     .stat-val {
-        font-size: 1.7rem;
+        font-size: 1.6rem;
         font-weight: 800;
         color: #F8FAFC;
         letter-spacing: -0.5px;
         line-height: 1.2;
     }
     .stat-sub {
-        font-size: 0.75rem;
+        font-size: 0.74rem;
         color: #64748B;
-        margin-top: 4px;
+        margin-top: 3px;
     }
 
     .val-cyan { color: #38BDF8; }
@@ -150,21 +145,12 @@ st.markdown("""
     .val-amber { color: #FBBF24; }
     .val-purple { color: #C084FC; }
 
-    /* Custom Step Containers */
-    .input-box {
-        background: rgba(17, 24, 39, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.09);
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
     /* Badges & Pills */
     .agent-pill {
         display: inline-block;
-        padding: 4px 12px;
+        padding: 3px 10px;
         border-radius: 9999px;
-        font-size: 0.75rem;
+        font-size: 0.74rem;
         font-weight: 700;
         letter-spacing: 0.3px;
         margin-right: 6px;
@@ -180,36 +166,36 @@ st.markdown("""
         background: #0F172A;
         border-left: 4px solid #38BDF8;
         border-radius: 8px;
-        padding: 16px;
-        margin-bottom: 12px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
         border-top: 1px solid rgba(255,255,255,0.05);
         border-right: 1px solid rgba(255,255,255,0.05);
         border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .decision-title {
-        font-size: 1rem;
+        font-size: 0.98rem;
         font-weight: 700;
         color: #F8FAFC;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
     .decision-meta {
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         color: #94A3B8;
         line-height: 1.45;
     }
     .decision-impact {
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         color: #38BDF8;
         font-weight: 600;
-        margin-top: 6px;
+        margin-top: 4px;
     }
 
     .risk-card {
         background: rgba(30, 27, 24, 0.5);
         border: 1px solid rgba(245, 158, 11, 0.25);
         border-radius: 8px;
-        padding: 14px;
-        margin-bottom: 10px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
     }
 
     /* Tab Custom Styling */
@@ -276,7 +262,7 @@ def render_mermaid(diagram_code: str, height: int = 420):
 with st.sidebar:
     st.markdown("""
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-        <img src="https://img.icons8.com/fluency/96/artificial-intelligence.png" width="46" style="filter: drop-shadow(0 0 12px rgba(56,189,248,0.4));"/>
+        <img src="https://img.icons8.com/fluency/96/artificial-intelligence.png" width="44" style="filter: drop-shadow(0 0 12px rgba(56,189,248,0.4));"/>
         <div>
             <div style="font-size:1.25rem; font-weight:800; color:#FFFFFF; letter-spacing:-0.5px;">SyncOps <span style="color:#38BDF8;">AI</span></div>
             <div style="font-size:0.75rem; color:#64748B; font-weight:600;">v2.5 Enterprise Edition</div>
@@ -290,7 +276,7 @@ with st.sidebar:
         "Model Provider",
         ["Demo Mode (Smart Offline Engine)", "Google Gemini API", "OpenAI API"],
         index=0,
-        help="Demo mode allows instantaneous full evaluation without external API keys."
+        help="Demo mode evaluates input locally without requiring external API keys."
     )
 
     api_key = ""
@@ -303,16 +289,17 @@ with st.sidebar:
         model_choice = st.selectbox("Model", ["gpt-4o-mini", "gpt-4o"])
 
     st.divider()
-    st.markdown("##### 🏛️ AI Fluency Architecture")
+    st.markdown("##### 🏛️ System Architecture")
     st.caption("• **Swarm Pipeline:** 4 Specialized Agents")
     st.caption("• **Voice Engine:** Multimodal Audio Ingestion")
-    st.caption("• **Schema Guarantee:** Zero-Hallucination")
+    st.caption("• **Schema Guarantee:** Deterministic JSON")
     st.caption("• **HITL:** Interactive Editable Backlog")
 
     st.divider()
-    st.markdown("##### 💼 Enterprise Alignment")
-    st.caption("• Designed for **SkillfyAI for Business**")
-    st.caption("• 'Every Person Owns a Number' Scorecard")
+    st.markdown("##### 💼 Enterprise Standards")
+    st.caption("• Automated Workflow Orchestration")
+    st.caption("• Deterministic Governance Gates")
+    st.caption("• Productivity & Cost ROI Tracking")
 
 # ----------------- HERO HEADER -----------------
 st.markdown("""
@@ -323,37 +310,59 @@ st.markdown("""
     </div>
     <h1 class="hero-title">SyncOps <span class="gradient-text">AI</span></h1>
     <div class="hero-subtitle">The Autonomous Bridge Between Stakeholder Dialogue and Production Delivery.</div>
-    <div class="hero-description">Translates unstructured client meetings, audio recordings, and Zoom transcripts into binding Standard Operating Procedures, Jira issue backlogs, and C-Suite briefings with zero hallucination.</div>
 </div>
 """, unsafe_allow_html=True)
 
-# ----------------- TOP METRICS BANNER -----------------
-st.markdown("""
+# Session State Cache
+if "last_results" not in st.session_state:
+    st.session_state.last_results = None
+
+# Dynamic Stats Computation (Zero fake numbers)
+if st.session_state.last_results:
+    lr = st.session_state.last_results
+    roi = lr["roi_metrics"]
+    extracted_obj = lr["extracted"]
+    val_time_saved = f"{roi.get('time_saved_hours', 4.5)} hrs"
+    val_decisions = f"{len(extracted_obj.get('decisions', []))} Logged"
+    val_actions = f"{len(extracted_obj.get('action_items', []))} Tickets"
+    val_latency = f"{lr.get('real_latency', 0.9)}s"
+    val_grade = roi.get('health_grade', 'A+')[:2].strip()
+    sub_status = "session completed"
+else:
+    val_time_saved = "Standby"
+    val_decisions = "Standby"
+    val_actions = "Standby"
+    val_latency = "Standby"
+    val_grade = "Standby"
+    sub_status = "ready to analyze"
+
+# ----------------- DYNAMIC METRICS BANNER -----------------
+st.markdown(f"""
 <div class="stat-grid">
     <div class="stat-card">
         <div class="stat-label">Admin Time Saved</div>
-        <div class="stat-val val-cyan">4.5 hrs</div>
-        <div class="stat-sub">per meeting session</div>
+        <div class="stat-val val-cyan">{val_time_saved}</div>
+        <div class="stat-sub">{sub_status}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Schema Compliance</div>
-        <div class="stat-val val-emerald">100%</div>
-        <div class="stat-sub">deterministic output</div>
+        <div class="stat-label">Decisions Isolated</div>
+        <div class="stat-val val-emerald">{val_decisions}</div>
+        <div class="stat-sub">{sub_status}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Swarm Architecture</div>
-        <div class="stat-val val-indigo">4 Agents</div>
-        <div class="stat-sub">coordinated pipeline</div>
+        <div class="stat-label">Action Items</div>
+        <div class="stat-val val-indigo">{val_actions}</div>
+        <div class="stat-sub">{sub_status}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Execution Latency</div>
-        <div class="stat-val val-amber">&lt; 1.2s</div>
-        <div class="stat-sub">full turn-around</div>
+        <div class="stat-label">Orchestration Latency</div>
+        <div class="stat-val val-amber">{val_latency}</div>
+        <div class="stat-sub">{sub_status}</div>
     </div>
     <div class="stat-card">
         <div class="stat-label">Governance Grade</div>
-        <div class="stat-val val-purple">A+</div>
-        <div class="stat-sub">executive audit ready</div>
+        <div class="stat-val val-purple">{val_grade}</div>
+        <div class="stat-sub">{sub_status}</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -362,27 +371,24 @@ st.markdown("""
 transcript_input = ""
 
 st.markdown("""
-<div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-    <span style="background:#38BDF8; color:#080C14; font-weight:800; font-size:0.75rem; padding:2px 8px; border-radius:9999px;">STEP 1</span>
-    <span style="font-size:1.15rem; font-weight:700; color:#FFFFFF;">Select Input Ingestion Channel</span>
+<div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+    <span style="background:#38BDF8; color:#080C14; font-weight:800; font-size:0.75rem; padding:2px 8px; border-radius:9999px;">INPUT</span>
+    <span style="font-size:1.1rem; font-weight:700; color:#FFFFFF;">Select Ingestion Channel</span>
 </div>
 """, unsafe_allow_html=True)
 
 input_mode_tabs = st.radio(
-    "Select Your Input Mode:",
-    ["🎙️ Live Microphone Voice Recording", "📁 Upload Audio File (.wav/.mp3)", "📝 Preloaded Scenarios & Notes"],
+    "Channel:",
+    ["🎙️ Live Microphone", "📁 Upload Audio File", "📝 Enterprise Scenarios / Text"],
     horizontal=True,
     index=0
 )
 
-if input_mode_tabs == "🎙️ Live Microphone Voice Recording":
+if input_mode_tabs == "🎙️ Live Microphone":
     st.markdown("""
-    <div style="background:rgba(30, 41, 59, 0.4); border:1px solid rgba(56, 189, 248, 0.25); padding:16px; border-radius:10px; margin-bottom:14px;">
-        <div style="display:flex; align-items:center; gap:8px;">
-            <span style="color:#38BDF8; font-size:1.2rem;">🎙️</span>
-            <b style="color:#F8FAFC; font-size:1rem;">Direct Microphone Ingestion</b>
-        </div>
-        <div style="font-size:0.86rem; color:#94A3B8; margin-top:4px;">
+    <div style="background:rgba(30, 41, 59, 0.4); border:1px solid rgba(56, 189, 248, 0.25); padding:14px; border-radius:10px; margin-bottom:12px;">
+        <b style="color:#F8FAFC; font-size:0.95rem;">🎙️ Direct Microphone Voice Recording</b>
+        <div style="font-size:0.84rem; color:#94A3B8; margin-top:3px;">
             Click the record button below to speak meeting action items or decisions live into your microphone.
         </div>
     </div>
@@ -393,30 +399,22 @@ if input_mode_tabs == "🎙️ Live Microphone Voice Recording":
     if recorded_audio is not None:
         st.audio(recorded_audio)
         audio_proc = AudioProcessor(api_key=api_key)
-        with st.spinner("🎙️ Transcribing live microphone speech..."):
+        with st.spinner("Transcribing speech..."):
             transcript_input = audio_proc.transcribe(recorded_audio.getvalue(), file_name="live_microphone_recording.wav")
-        st.success("Transcribed live microphone recording successfully!")
+        st.success("Transcribed live microphone recording!")
     else:
-        st.caption("💡 No microphone available right now? Select a pre-recorded audio sample below:")
-        sample_choice = st.selectbox("Pre-recorded Audio Sample", [
-            "fintech_onboarding_call_recording.wav",
-            "production_incident_debrief.wav",
-            "executive_strategy_sync.wav"
-        ])
+        # Clean fallback without clutter
         audio_proc = AudioProcessor(api_key=api_key)
-        transcript_input = audio_proc.transcribe(b"", file_name=sample_choice)
+        transcript_input = audio_proc.transcribe(b"", file_name="executive_strategy_sync.wav")
 
-    with st.expander("📝 View & Edit Transcribed Dialogue", expanded=True):
-        transcript_input = st.text_area("Transcribed Dialogue", value=transcript_input, height=150)
+    with st.expander("📝 View / Edit Transcribed Dialogue", expanded=True):
+        transcript_input = st.text_area("Transcribed Dialogue", value=transcript_input, height=140)
 
-elif input_mode_tabs == "📁 Upload Audio File (.wav/.mp3)":
+elif input_mode_tabs == "📁 Upload Audio File":
     st.markdown("""
-    <div style="background:rgba(30, 41, 59, 0.4); border:1px solid rgba(52, 211, 153, 0.25); padding:16px; border-radius:10px; margin-bottom:14px;">
-        <div style="display:flex; align-items:center; gap:8px;">
-            <span style="color:#34D399; font-size:1.2rem;">📁</span>
-            <b style="color:#F8FAFC; font-size:1rem;">Audio File Ingestion</b>
-        </div>
-        <div style="font-size:0.86rem; color:#94A3B8; margin-top:4px;">
+    <div style="background:rgba(30, 41, 59, 0.4); border:1px solid rgba(52, 211, 153, 0.25); padding:14px; border-radius:10px; margin-bottom:12px;">
+        <b style="color:#F8FAFC; font-size:0.95rem;">📁 Audio File Ingestion</b>
+        <div style="font-size:0.84rem; color:#94A3B8; margin-top:3px;">
             Drop an audio recording (.wav, .mp3, .m4a) from Zoom, Google Meet, or your phone.
         </div>
     </div>
@@ -426,57 +424,44 @@ elif input_mode_tabs == "📁 Upload Audio File (.wav/.mp3)":
     if uploaded_audio:
         st.audio(uploaded_audio)
         audio_proc = AudioProcessor(api_key=api_key)
-        with st.spinner(f"🎙️ Transcribing {uploaded_audio.name}..."):
+        with st.spinner(f"Transcribing {uploaded_audio.name}..."):
             transcript_input = audio_proc.transcribe(uploaded_audio.getvalue(), file_name=uploaded_audio.name)
         st.success(f"Transcribed {uploaded_audio.name} successfully!")
     else:
-        sample_choice = st.selectbox("Or select pre-recorded enterprise audio:", [
-            "fintech_onboarding_call_recording.wav",
-            "production_incident_debrief.wav",
-            "executive_strategy_sync.wav"
-        ])
         audio_proc = AudioProcessor(api_key=api_key)
-        transcript_input = audio_proc.transcribe(b"", file_name=sample_choice)
+        transcript_input = audio_proc.transcribe(b"", file_name="fintech_onboarding_call_recording.wav")
 
-    with st.expander("📝 View & Edit Transcribed Audio Text", expanded=True):
-        transcript_input = st.text_area("Transcribed Dialogue", value=transcript_input, height=150)
+    with st.expander("📝 View / Edit Transcribed Audio Text", expanded=True):
+        transcript_input = st.text_area("Transcribed Dialogue", value=transcript_input, height=140)
 
 else:
     st.markdown("""
-    <div style="background:rgba(30, 41, 59, 0.4); border:1px solid rgba(255, 255, 255, 0.1); padding:16px; border-radius:10px; margin-bottom:14px;">
-        <div style="display:flex; align-items:center; gap:8px;">
-            <span style="color:#A78BFA; font-size:1.2rem;">📝</span>
-            <b style="color:#F8FAFC; font-size:1rem;">Preloaded Enterprise Scenarios</b>
-        </div>
-        <div style="font-size:0.86rem; color:#94A3B8; margin-top:4px;">
-            Select a realistic corporate transcript or paste your own raw notes.
+    <div style="background:rgba(30, 41, 59, 0.4); border:1px solid rgba(255, 255, 255, 0.1); padding:14px; border-radius:10px; margin-bottom:12px;">
+        <b style="color:#F8FAFC; font-size:0.95rem;">📝 Enterprise Scenarios / Text Input</b>
+        <div style="font-size:0.84rem; color:#94A3B8; margin-top:3px;">
+            Select a verified enterprise transcript or paste your custom notes.
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    selected_scenario = st.selectbox("Select Enterprise Scenario", list(TEMPLATES.keys()) + ["Custom Meeting Notes"], index=0)
+    selected_scenario = st.selectbox("Select Scenario", list(TEMPLATES.keys()) + ["Custom Meeting Notes"], index=0)
 
     if selected_scenario in TEMPLATES:
         t_info = TEMPLATES[selected_scenario]
-        with st.expander(f"📝 {selected_scenario} — Dialogue Transcript", expanded=True):
+        with st.expander(f"📝 {selected_scenario} — Details", expanded=True):
             context_str = str(t_info.get('description', ''))
             part_str = ', '.join(t_info.get('participants', []))
             st.info(f"**Context:** {context_str} | **Stakeholders:** {part_str}")
-            transcript_input = st.text_area("Transcript Content", value=t_info["transcript"], height=180)
+            transcript_input = st.text_area("Transcript Content", value=t_info["transcript"], height=160)
     else:
         with st.expander("📝 Custom Meeting Notes / Dialogue", expanded=True):
-            st.info("Paste your raw meeting notes, audio transcripts, or chat logs below:")
-            transcript_input = st.text_area("Custom Transcript Content", value="[00:00] Alice: We agreed to launch the customer data export API by next Tuesday. Bob will handle the OAuth2 token validation. Sarah will review the security compliance audit report.", height=180)
+            transcript_input = st.text_area("Custom Transcript Content", value="[00:00] Alice: We agreed to launch the customer data export API by next Tuesday. Bob will handle the OAuth2 token validation. Sarah will review the security compliance audit report.", height=160)
 
 # Run Button
 st.write("")
 col_btn1, col_btn2 = st.columns([1.5, 3.5])
 with col_btn1:
     execute_button = st.button("🚀 Run Multi-Agent Orchestration", type="primary", use_container_width=True)
-
-# Session State Cache
-if "last_results" not in st.session_state:
-    st.session_state.last_results = None
 
 # ----------------- AGENT EXECUTION -----------------
 if execute_button:
@@ -486,37 +471,35 @@ if execute_button:
     elif provider_option == "OpenAI API":
         provider_slug = "openai"
 
+    start_time = time.time()
     llm_client = UniversalLLMClient(provider=provider_slug, api_key=api_key, model=model_choice)
     
     with st.status("🤖 Executing Coordinated Agent Swarm...", expanded=True) as status:
         st.write("🔍 **Agent 1 [Extractor Agent]:** Analyzing dialogue, parsing decisions, risks, and RACI matrices...")
         extractor = ExtractorAgent(llm_client)
         extracted = extractor.extract(transcript_input)
-        time.sleep(0.3)
 
         st.write("📈 **Analytics Engine:** Computing Actionability Index, Accountability Ratio & Meeting Cost ROI...")
         roi_metrics = MeetingROIEngine.calculate_metrics(extracted, transcript_input)
-        time.sleep(0.1)
 
         st.write("📐 **Agent 2 [SOP Architect]:** Synthesizing operational procedure, delivery gates, and Mermaid diagram...")
         sop_architect = SOPArchitectAgent(llm_client)
         sop = sop_architect.generate_sop(extracted)
-        time.sleep(0.2)
 
         st.write("🎫 **Agent 3 [Task Dispatcher]:** Generating Jira/Linear issue schemas and CSV ticket export...")
         dispatcher = TaskDispatcherAgent()
         dispatch_result = dispatcher.dispatch(extracted)
-        time.sleep(0.2)
 
         st.write("✉️ **Agent 4 [Executive Comms]:** Drafting executive briefing email and Slack broadcast...")
         comms = CommsAgent()
         comms_result = comms.generate_comms(extracted, sop)
-        time.sleep(0.2)
 
         st.write("📄 **Document Compiler:** Compiling publication-grade executive PDF document...")
         pdf_bytes = generate_sop_pdf(sop, extracted)
         
         status.update(label="✅ Multi-Agent Orchestration Completed Successfully!", state="complete", expanded=False)
+
+    total_latency = round(time.time() - start_time, 2)
 
     st.session_state.last_results = {
         "extracted": extracted,
@@ -525,8 +508,10 @@ if execute_button:
         "comms": comms_result,
         "roi_metrics": roi_metrics,
         "pdf_bytes": pdf_bytes,
-        "transcript_text": transcript_input
+        "transcript_text": transcript_input,
+        "real_latency": total_latency
     }
+    st.rerun()
 
 # ----------------- DISPLAY RESULTS -----------------
 if st.session_state.last_results:
@@ -539,9 +524,9 @@ if st.session_state.last_results:
     pdf_bytes = res["pdf_bytes"]
 
     st.markdown(f"""
-    <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:12px 18px; margin: 18px 0px 22px 0px; display:flex; justify-content:space-between; align-items:center;">
+    <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:12px 18px; margin: 16px 0px 20px 0px; display:flex; justify-content:space-between; align-items:center;">
         <div>
-            <span style="color:#34D399; font-weight:800; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">DELIVERY TARGET</span>
+            <span style="color:#34D399; font-weight:800; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px;">DELIVERY TARGET</span>
             <div style="font-size:1.15rem; font-weight:700; color:#FFFFFF;">{extracted.get('meeting_title')}</div>
         </div>
         <div style="text-align:right;">
@@ -626,8 +611,8 @@ if st.session_state.last_results:
                         <span class="agent-pill {badge_class}">{sev.upper()} SEVERITY</span>
                         <b style="color:#F8FAFC;">{r.get('risk')}</b>
                     </div>
-                    <div style="font-size: 0.85rem; color:#FBBF24; margin-top: 4px;"><b>Impact:</b> {r.get('impact')}</div>
-                    <div style="font-size: 0.85rem; color:#34D399; margin-top: 2px;"><b>Mitigation:</b> {r.get('mitigation')}</div>
+                    <div style="font-size: 0.84rem; color:#FBBF24; margin-top: 3px;"><b>Impact:</b> {r.get('impact')}</div>
+                    <div style="font-size: 0.84rem; color:#34D399; margin-top: 2px;"><b>Mitigation:</b> {r.get('mitigation')}</div>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -753,7 +738,7 @@ if st.session_state.last_results:
 
         wh_url = st.text_input(
             "Target Webhook URL",
-            value="https://hooks.slack.com/services/YOUR/REAL/WEBHOOK_URL",
+            value="https://hooks.slack.com/services/T00/B00/XXXXX",
             help="Paste your real Slack or Discord webhook URL to test live notifications."
         )
 
@@ -772,9 +757,9 @@ if st.session_state.last_results:
             dispatch_button = st.button("📡 Dispatch Live Webhook", type="primary", use_container_width=True)
 
         if dispatch_button:
-            if "YOUR/REAL" in wh_url or "api.skillfyai.school" in wh_url:
+            if "XXXXX" in wh_url or "YOUR/REAL" in wh_url:
                 st.toast("✅ Webhook payload simulated successfully!", icon="🚀")
-                st.success("200 OK — Simulated dispatch received. (Paste a live Slack/Discord URL to ping real channels!)")
+                st.success("200 OK — Simulated dispatch received. (Paste a live Slack/Discord URL to test network delivery.)")
             else:
                 with st.spinner("Dispatching HTTP POST request to webhook..."):
                     dispatch_status = LiveWebhookDispatcher.dispatch(

@@ -91,14 +91,13 @@ class UniversalLLMClient:
 
     def _smart_offline_generate(self, prompt: str, system_prompt: str) -> str:
         """High-fidelity heuristic generator for instant evaluation without external API keys."""
-        # Detect scenario keywords
         p_lower = prompt.lower()
         
-        if "fintech" in p_lower or "cloudsync" in p_lower or "onboarding" in p_lower or "mtls" in p_lower:
+        if "fintech" in p_lower or "cloudsync" in p_lower:
             return self._mock_fintech_response(prompt)
-        elif "postmortem" in p_lower or "incident" in p_lower or "hikaricp" in p_lower or "outage" in p_lower:
+        elif "postmortem" in p_lower or "incident" in p_lower or "hikaricp" in p_lower:
             return self._mock_incident_response(prompt)
-        elif "copilot" in p_lower or "support" in p_lower or "csat" in p_lower or "refund" in p_lower:
+        elif "copilot" in p_lower or "csat" in p_lower or "refund" in p_lower:
             return self._mock_strategy_response(prompt)
         else:
             return self._mock_generic_response(prompt)
@@ -111,7 +110,7 @@ class UniversalLLMClient:
                 "decisions": [
                     {"decision": "Adopt OAuth2 with IP Whitelisting", "context": "SecOps rejected static API keys in config files; mTLS or OAuth2 with CIDR block required.", "impact": "Zero-trust compliance achieved."},
                     {"decision": "Webhook v2 Integration with HMAC-SHA256", "context": "Automatic failure callback required for PagerDuty automated alerting.", "impact": "Sub-minute incident detection for sync drops."},
-                    {"decision": "Platinum Support Tier Active", "context": "Fintech Global contract requires 99.95% uptime and 15-minute P1 critical response SLA.", "impact": "Signed and registered in Salesforce."}
+                    {"decision": "Platinum Support Tier Active", "context": "Fintech Global contract requires 99.95% uptime and 15-minute P1 critical response SLA.", "impact": "Signed and registered in CRM portal."}
                 ],
                 "action_items": [
                     {"id": "ACT-01", "task": "Provision and communicate static egress IP addresses for CIDR whitelisting", "assignee": "Marcus Vance", "role": "Director of SecOps", "priority": "High", "deadline": "Thursday 5:00 PM EST", "category": "Security"},
@@ -191,45 +190,93 @@ class UniversalLLMClient:
         return "Extraction complete."
 
     def _mock_generic_response(self, prompt: str) -> str:
-        # Generic heuristic parser for custom user transcripts
-        lines = prompt.split("\n")
+        """Dynamic heuristic parser extracting real text, speakers, and action items from any custom input."""
+        lines = [l.strip() for l in prompt.split("\n") if l.strip()]
+        
         detected_tasks = []
+        detected_decisions = []
+        detected_speakers = set()
         task_id = 1
+
         for line in lines:
-            if any(k in line.lower() for k in ["will", "must", "action item", "todo", "assigned to", "deadline"]):
-                clean_line = re.sub(r'\[.*?\]', '', line).strip()
+            clean = re.sub(r'\[\d{2}:\d{2}\]', '', line).strip()
+            
+            # Extract speaker if format is "Speaker: text"
+            speaker = "Assigned Lead"
+            task_text = clean
+            if ":" in clean and len(clean.split(":")[0].split()) <= 3:
+                parts = clean.split(":", 1)
+                speaker_candidate = parts[0].strip()
+                if speaker_candidate.lower() not in ["http", "https", "note", "task"]:
+                    speaker = speaker_candidate
+                    detected_speakers.add(speaker)
+                    task_text = parts[1].strip()
+
+            lower_line = line.lower()
+            
+            # Check for decisions
+            if any(k in lower_line for k in ["agreed", "decided", "concluded", "aligned", "selected", "locked in"]):
+                detected_decisions.append({
+                    "decision": task_text[:75] + ("..." if len(task_text) > 75 else ""),
+                    "context": "Aligned by stakeholders during session discussion.",
+                    "impact": "Establishes baseline delivery requirement."
+                })
+
+            # Check for action items
+            if any(k in lower_line for k in ["will", "must", "action", "todo", "assigned", "deadline", "by next", "deploy", "build", "review"]):
+                # Look for named assignee before 'will' (e.g., 'Bob will handle...')
+                will_match = re.search(r'([A-Z][a-z]+)\s+will\b', clean)
+                if will_match:
+                    speaker = will_match.group(1)
+                    detected_speakers.add(speaker)
+
+                # Look for deadline
+                deadline = "Next Sprint"
+                by_match = re.search(r'by\s+([A-Za-z0-9\s]+?)(?:\.|$)', clean, re.IGNORECASE)
+                if by_match:
+                    deadline = by_match.group(0).strip().capitalize()
+
                 detected_tasks.append({
                     "id": f"ACT-{task_id:02d}",
-                    "task": clean_line[:90] + ("..." if len(clean_line) > 90 else ""),
-                    "assignee": "Assigned Lead",
-                    "role": "Team Member",
-                    "priority": "High" if "urgent" in line.lower() or "critical" in line.lower() else "Medium",
-                    "deadline": "Next Sprint Review",
-                    "category": "Operations"
+                    "task": task_text[:85] + ("..." if len(task_text) > 85 else ""),
+                    "assignee": speaker,
+                    "role": "Team Lead" if speaker != "Assigned Lead" else "Operations",
+                    "priority": "High" if any(w in lower_line for w in ["urgent", "critical", "security", "asap"]) else "Medium",
+                    "deadline": deadline,
+                    "category": "Technical Delivery" if any(w in lower_line for w in ["api", "data", "code", "database"]) else "Operations"
                 })
                 task_id += 1
-                if task_id > 5:
+                if task_id > 6:
                     break
-        
+
+        if not detected_decisions:
+            detected_decisions = [
+                {"decision": "Standardize cross-functional operational workflows", "context": "Aligned by participants during meeting discussion.", "impact": "Prevents delivery bottlenecks and miscommunication."}
+            ]
+
         if not detected_tasks:
             detected_tasks = [
-                {"id": "ACT-01", "task": "Synthesize operational requirements and distribute executive notes", "assignee": "Project Manager", "role": "Coordinator", "priority": "High", "deadline": "Friday EOD", "category": "Project Management"},
-                {"id": "ACT-02", "task": "Validate technical architecture and security boundaries with stakeholders", "assignee": "Tech Lead", "role": "Engineering", "priority": "Medium", "deadline": "Monday 10 AM", "category": "Technical Review"}
+                {"id": "ACT-01", "task": "Synthesize meeting requirements and track deliverable milestones", "assignee": list(detected_speakers)[0] if detected_speakers else "Operations Lead", "role": "Project Owner", "priority": "High", "deadline": "Next Sprint", "category": "Project Management"}
             ]
+
+        # Dynamic RACI
+        raci = []
+        for sp in (list(detected_speakers)[:4] or ["Operations Lead", "Technical Architect"]):
+            raci.append({
+                "role": sp,
+                "responsible": "Assigned operational deliverables",
+                "accountable": "Milestone delivery verification",
+                "consulted": "Cross-team dependencies",
+                "informed": "Project Stakeholders"
+            })
 
         return json.dumps({
             "meeting_title": "Enterprise Operations & Stakeholder Alignment Review",
-            "target_go_live": "End of Quarter",
-            "decisions": [
-                {"decision": "Standardize on automated cross-functional workflow pipelines", "context": "Stakeholders aligned on reducing manual handoffs.", "impact": "Streamlined cycle times and audit compliance."},
-                {"decision": "Enforce strict delivery milestones with named ownership", "context": "Ensures accountability across distributed teams.", "impact": "Clear escalation paths for blockers."}
-            ],
+            "target_go_live": "Upcoming Sprint Release",
+            "decisions": detected_decisions,
             "action_items": detected_tasks,
             "risks_and_blockers": [
-                {"risk": "Cross-team dependency handoff delays", "impact": "Potential 2-3 day slippage in integration window", "mitigation": "Daily asynchronous standup check-ins", "severity": "Medium"}
+                {"risk": "Cross-team dependency coordination delays", "impact": "Potential milestone slippage", "mitigation": "Daily asynchronous status syncs", "severity": "Medium"}
             ],
-            "raci_matrix": [
-                {"role": "Executive Sponsor", "responsible": "Resource allocation", "accountable": "Business outcome", "consulted": "Scope adjustments", "informed": "Milestone achievements"},
-                {"role": "Operational Lead", "responsible": "Execution of deliverables", "accountable": "Day-to-day delivery", "consulted": "Technical hurdles", "informed": "Team members"}
-            ]
+            "raci_matrix": raci
         })
