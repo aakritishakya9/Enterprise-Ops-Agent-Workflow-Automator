@@ -1,6 +1,7 @@
 """
 SyncOps AI - Enterprise Meeting-to-SOP & Workflow Automation Agent
-Dynamic Enterprise Edition: Zero fake hardcoded values, real-time metrics, clean minimal SaaS UI.
+Enterprise Edition v2.6: With "Chat with Meeting", 1-Click Calendar Export (.ics), 
+Critical Path Dependency Analyzer, and Multi-Platform Export Hub (Notion, Jira, Confluence).
 """
 
 import streamlit as st
@@ -15,6 +16,10 @@ from core.pdf_generator import generate_sop_pdf
 from core.roi_analytics import MeetingROIEngine
 from core.audio_processor import AudioProcessor
 from core.webhook_sender import LiveWebhookDispatcher
+from core.calendar_export import CalendarExportEngine
+from core.dependency_analyzer import DependencyAnalyzer
+from core.export_formatter import MultiPlatformExportFormatter
+from core.meeting_qa import MeetingQAAgent
 from agents.extractor import ExtractorAgent
 from agents.sop_architect import SOPArchitectAgent
 from agents.task_dispatcher import TaskDispatcherAgent
@@ -37,7 +42,6 @@ st.markdown("""
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* Background and Layout */
     .stApp {
         background-color: #080C14;
         color: #F1F5F9;
@@ -200,18 +204,19 @@ st.markdown("""
 
     /* Tab Custom Styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 6px;
         background-color: #0F172A;
-        padding: 8px 10px;
+        padding: 6px 8px;
         border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.08);
+        overflow-x: auto;
     }
     .stTabs [data-baseweb="tab"] {
         border-radius: 6px;
         color: #94A3B8;
         font-weight: 600;
-        font-size: 0.88rem;
-        padding: 8px 16px;
+        font-size: 0.82rem;
+        padding: 6px 12px;
     }
     .stTabs [aria-selected="true"] {
         background-color: #1E293B !important;
@@ -265,7 +270,7 @@ with st.sidebar:
         <img src="https://img.icons8.com/fluency/96/artificial-intelligence.png" width="44" style="filter: drop-shadow(0 0 12px rgba(56,189,248,0.4));"/>
         <div>
             <div style="font-size:1.25rem; font-weight:800; color:#FFFFFF; letter-spacing:-0.5px;">SyncOps <span style="color:#38BDF8;">AI</span></div>
-            <div style="font-size:0.75rem; color:#64748B; font-weight:600;">v2.5 Enterprise Edition</div>
+            <div style="font-size:0.75rem; color:#64748B; font-weight:600;">v2.6 Enterprise Edition</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -291,9 +296,10 @@ with st.sidebar:
     st.divider()
     st.markdown("##### 🏛️ System Architecture")
     st.caption("• **Swarm Pipeline:** 4 Specialized Agents")
-    st.caption("• **Voice Engine:** Multimodal Audio Ingestion")
-    st.caption("• **Schema Guarantee:** Deterministic JSON")
-    st.caption("• **HITL:** Interactive Editable Backlog")
+    st.caption("• **Conversational Q&A:** Grounded RAG Chat")
+    st.caption("• **Calendar Sync:** RFC 5545 .ics Export")
+    st.caption("• **Critical Path:** Dependency Mapping")
+    st.caption("• **Multi-Export Hub:** Notion, Jira, Confluence")
 
     st.divider()
     st.markdown("##### 💼 Enterprise Standards")
@@ -317,7 +323,10 @@ st.markdown("""
 if "last_results" not in st.session_state:
     st.session_state.last_results = None
 
-# Dynamic Stats Computation (Zero fake numbers)
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# Dynamic Stats Computation
 if st.session_state.last_results:
     lr = st.session_state.last_results
     roi = lr["roi_metrics"]
@@ -403,7 +412,6 @@ if input_mode_tabs == "🎙️ Live Microphone":
             transcript_input = audio_proc.transcribe(recorded_audio.getvalue(), file_name="live_microphone_recording.wav")
         st.success("Transcribed live microphone recording!")
     else:
-        # Clean fallback without clutter
         audio_proc = AudioProcessor(api_key=api_key)
         transcript_input = audio_proc.transcribe(b"", file_name="executive_strategy_sync.wav")
 
@@ -490,6 +498,12 @@ if execute_button:
         dispatcher = TaskDispatcherAgent()
         dispatch_result = dispatcher.dispatch(extracted)
 
+        st.write("⏳ **Critical Path Engine:** Mapping task dependencies, blocking prerequisites, and Gantt roadmap...")
+        dep_analysis = DependencyAnalyzer.analyze(extracted.get("action_items", []), extracted.get("meeting_title", "Project"))
+
+        st.write("📅 **Calendar Engine:** Compiling RFC 5545 .ics iCalendar schedule and Google Calendar links...")
+        ics_calendar = CalendarExportEngine.generate_ics(extracted.get("action_items", []), extracted.get("meeting_title", "Project"))
+
         st.write("✉️ **Agent 4 [Executive Comms]:** Drafting executive briefing email and Slack broadcast...")
         comms = CommsAgent()
         comms_result = comms.generate_comms(extracted, sop)
@@ -507,6 +521,8 @@ if execute_button:
         "dispatch": dispatch_result,
         "comms": comms_result,
         "roi_metrics": roi_metrics,
+        "dep_analysis": dep_analysis,
+        "ics_calendar": ics_calendar,
         "pdf_bytes": pdf_bytes,
         "transcript_text": transcript_input,
         "real_latency": total_latency
@@ -521,7 +537,10 @@ if st.session_state.last_results:
     dispatch_res = res["dispatch"]
     comms = res["comms"]
     roi = res["roi_metrics"]
+    dep_analysis = res["dep_analysis"]
+    ics_calendar = res["ics_calendar"]
     pdf_bytes = res["pdf_bytes"]
+    transcript_text = res["transcript_text"]
 
     st.markdown(f"""
     <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:12px 18px; margin: 16px 0px 20px 0px; display:flex; justify-content:space-between; align-items:center;">
@@ -536,14 +555,18 @@ if st.session_state.last_results:
     </div>
     """, unsafe_allow_html=True)
 
-    # Main Tabs
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-        "📊 Intelligence & HITL Editor",
-        "📈 Meeting ROI Scorecard",
-        "📜 SOP Architect & Visual Flow",
-        "🎫 Task & Ticket Dispatcher",
+    # 10 Enterprise Tabs
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
+        "📊 Intelligence & HITL",
+        "💬 Chat with Meeting",
+        "📅 Calendar (.ics)",
+        "⏳ Critical Path & Gantt",
+        "📋 Export Hub",
+        "📈 ROI Scorecard",
+        "📜 SOP & Workflow",
+        "🎫 Jira/Linear Tickets",
         "✉️ Executive Comms",
-        "⚡ Live Webhook & API Push"
+        "⚡ Live Webhook Push"
     ])
 
     # ----------------- TAB 1: INTELLIGENCE & HUMAN-IN-THE-LOOP -----------------
@@ -572,9 +595,9 @@ if st.session_state.last_results:
             key="action_editor"
         )
 
-        col_sync1, col_sync2 = st.columns([1.2, 3.8])
+        col_sync1, col_sync2 = st.columns([1.4, 3.6])
         with col_sync1:
-            if st.button("💾 Re-Sync SOP & Tickets with Edits", type="secondary", use_container_width=True):
+            if st.button("💾 Re-Sync All Deliverables with Edits", type="secondary", use_container_width=True):
                 updated_actions = edited_action_df.to_dict('records')
                 extracted["action_items"] = updated_actions
                 
@@ -587,15 +610,19 @@ if st.session_state.last_results:
                 comms = CommsAgent()
                 comms_result = comms.generate_comms(extracted, sop)
                 
+                dep_analysis = DependencyAnalyzer.analyze(updated_actions, extracted.get("meeting_title", "Project"))
+                ics_calendar = CalendarExportEngine.generate_ics(updated_actions, extracted.get("meeting_title", "Project"))
                 pdf_bytes = generate_sop_pdf(sop, extracted)
                 
                 st.session_state.last_results["extracted"] = extracted
                 st.session_state.last_results["dispatch"] = dispatch_res
                 st.session_state.last_results["sop"] = sop
                 st.session_state.last_results["comms"] = comms_result
+                st.session_state.last_results["dep_analysis"] = dep_analysis
+                st.session_state.last_results["ics_calendar"] = ics_calendar
                 st.session_state.last_results["pdf_bytes"] = pdf_bytes
                 
-                st.toast("✅ Re-synced SOP, PDF, and Jira Tickets with your edits!", icon="🎉")
+                st.toast("✅ Re-synced SOP, Calendar, Gantt, and Tickets with your edits!", icon="🎉")
                 st.rerun()
 
         st.divider()
@@ -622,8 +649,141 @@ if st.session_state.last_results:
             if not raci_df.empty:
                 st.dataframe(raci_df, use_container_width=True, hide_index=True)
 
-    # ----------------- TAB 2: ROI SCORECARD -----------------
+    # ----------------- TAB 2: CHAT WITH MEETING (UPGRADE 1) -----------------
     with tab2:
+        st.markdown("#### 💬 Conversational Q&A Assistant")
+        st.caption("Ask any question regarding this meeting dialogue, decisions, participants, or technical blockers.")
+
+        qa_llm = UniversalLLMClient(provider=provider_option.lower(), api_key=api_key)
+        qa_agent = MeetingQAAgent(qa_llm)
+
+        # Quick prompt suggestion buttons
+        st.write("##### Quick Inquiries:")
+        col_q1, col_q2, col_q3 = st.columns(3)
+        with col_q1:
+            if st.button("⏱️ What are the key deadlines?", use_container_width=True):
+                st.session_state.chat_history.append({"role": "user", "content": "What are the key deadlines and milestones?"})
+                ans = qa_agent.answer_question("What are the key deadlines and milestones?", transcript_text, extracted)
+                st.session_state.chat_history.append({"role": "assistant", "content": ans})
+                st.rerun()
+        with col_q2:
+            if st.button("⚠️ What is the biggest blocker?", use_container_width=True):
+                st.session_state.chat_history.append({"role": "user", "content": "What is the biggest blocker or risk?"})
+                ans = qa_agent.answer_question("What is the biggest blocker or risk?", transcript_text, extracted)
+                st.session_state.chat_history.append({"role": "assistant", "content": ans})
+                st.rerun()
+        with col_q3:
+            if st.button("👤 Who is assigned to what?", use_container_width=True):
+                st.session_state.chat_history.append({"role": "user", "content": "Who is assigned to which action item?"})
+                ans = qa_agent.answer_question("Who is assigned to which action item?", transcript_text, extracted)
+                st.session_state.chat_history.append({"role": "assistant", "content": ans})
+                st.rerun()
+
+        st.divider()
+        # Display chat messages
+        for msg in st.session_state.chat_history:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+
+        user_query = st.chat_input("Ask a question about this meeting (e.g., 'What did Marcus say about static IPs?')...")
+        if user_query:
+            st.session_state.chat_history.append({"role": "user", "content": user_query})
+            with st.chat_message("user"):
+                st.markdown(user_query)
+
+            with st.chat_message("assistant"):
+                with st.spinner("Analyzing meeting transcript..."):
+                    response = qa_agent.answer_question(user_query, transcript_text, extracted)
+                    st.markdown(response)
+                    st.session_state.chat_history.append({"role": "assistant", "content": response})
+
+    # ----------------- TAB 3: CALENDAR & DEADLINES (UPGRADE 2) -----------------
+    with tab3:
+        st.markdown("#### 📅 Calendar & Deadline Sync Engine")
+        st.caption("Sync meeting milestones directly to Google Calendar, Outlook, or Apple Calendar using RFC 5545 standard.")
+
+        col_cal1, col_cal2 = st.columns([1.5, 3.5])
+        with col_cal1:
+            st.download_button(
+                label="📥 Download All Milestones (.ics)",
+                data=ics_calendar,
+                file_name=f"{extracted.get('meeting_title', 'Project')[:20]}_Schedule.ics",
+                mime="text/calendar",
+                type="primary",
+                use_container_width=True
+            )
+
+        st.write("")
+        st.markdown("##### Individual Action Item Calendar Links")
+        for act in extracted.get("action_items", []):
+            gcal_link = CalendarExportEngine.generate_google_calendar_url(act, extracted.get("meeting_title", "Project"))
+            single_ics = CalendarExportEngine.generate_ics([act], extracted.get("meeting_title", "Project"))
+            
+            with st.expander(f"📌 [{act.get('id')}] {act.get('task')} — Due: {act.get('deadline')}", expanded=False):
+                st.write(f"• **Assignee:** {act.get('assignee')} ({act.get('role')})")
+                st.write(f"• **Priority:** `{act.get('priority')}` | **Target Due:** `{act.get('deadline')}`")
+                
+                col_gcal, col_sics = st.columns([1, 1])
+                with col_gcal:
+                    st.markdown(f"[📅 **Add to Google Calendar**]({gcal_link})")
+                with col_sics:
+                    st.download_button(
+                        label="Download Task .ics",
+                        data=single_ics,
+                        file_name=f"{act.get('id')}_Event.ics",
+                        mime="text/calendar",
+                        key=f"dl_ics_{act.get('id')}"
+                    )
+
+    # ----------------- TAB 4: CRITICAL PATH & GANTT (UPGRADE 3) -----------------
+    with tab4:
+        st.markdown("#### ⏳ Critical Path & Task Dependency Analyzer")
+        st.caption("Identifies sequential blocking dependencies and visualizes the project critical path.")
+
+        col_cp1, col_cp2, col_cp3 = st.columns(3)
+        with col_cp1:
+            st.metric("Total Prerequisites", f"{dep_analysis['total_dependencies']} Links", delta="Sequential Flow")
+        with col_cp2:
+            st.metric("Parallelizability Score", f"{dep_analysis['parallelizability_score']}%", delta="Concurrency Yield")
+        with col_cp3:
+            st.metric("Critical Path Milestones", f"{len(dep_analysis['critical_path'])} High-Impact", delta="Zero Float")
+
+        st.divider()
+        st.markdown("##### 📊 Visual Delivery Roadmap (Mermaid Gantt)")
+        render_mermaid(dep_analysis["mermaid_gantt"], height=340)
+
+        st.markdown("##### 🔗 Task Dependency Flowchart")
+        render_mermaid(dep_analysis["mermaid_dep_graph"], height=300)
+
+    # ----------------- TAB 5: MULTI-PLATFORM EXPORT HUB (UPGRADE 4) -----------------
+    with tab5:
+        st.markdown("#### 📋 Multi-Platform Export Hub")
+        st.caption("One-click formatted exports tailored for enterprise documentation platforms.")
+
+        sub_notion, sub_jira, sub_conf = st.tabs(["Notion Markdown", "Jira Wiki Markup", "Confluence HTML"])
+        
+        with sub_notion:
+            notion_text = MultiPlatformExportFormatter.to_notion(extracted, sop)
+            st.text_area("Notion-Formatted Markdown", value=notion_text, height=280)
+            st.download_button(
+                label="Download Notion .md",
+                data=notion_text,
+                file_name=f"{extracted.get('meeting_title', 'Meeting')[:20]}_Notion.md",
+                mime="text/markdown"
+            )
+
+        with sub_jira:
+            jira_markup = MultiPlatformExportFormatter.to_jira_markup(extracted, sop)
+            st.text_area("Jira Wiki Markup", value=jira_markup, height=280)
+            st.caption("Tip: Paste directly into Jira Description / Comment fields.")
+
+        with sub_conf:
+            conf_html = MultiPlatformExportFormatter.to_confluence_html(extracted, sop)
+            st.text_area("Confluence HTML Storage Format", value=conf_html, height=280)
+            st.caption("Tip: Paste directly into Confluence HTML macro.")
+
+    # ----------------- TAB 6: ROI SCORECARD -----------------
+    with tab6:
         st.markdown("#### 📈 Executive Meeting Productivity & ROI Scorecard")
         st.caption("Quantifying business yield: 'Every Person Owns a Number'")
 
@@ -656,8 +816,8 @@ if st.session_state.last_results:
             - **Estimated Annual Savings (100 meetings/yr):** **<span style="color:#34D399; font-size:1.15rem;">${roi['net_savings_per_meeting'] * 100:,.2f}</span>**
             """, unsafe_allow_html=True)
 
-    # ----------------- TAB 3: SOP ARCHITECT & VISUAL FLOW -----------------
-    with tab3:
+    # ----------------- TAB 7: SOP ARCHITECT & VISUAL FLOW -----------------
+    with tab7:
         top_sop_col1, top_sop_col2 = st.columns([3, 1])
         with top_sop_col1:
             st.markdown(f"#### Generated Standard Operating Procedure (`{sop['sop_id']}`)")
@@ -689,8 +849,8 @@ if st.session_state.last_results:
         st.markdown("##### 📖 Full Standard Operating Procedure")
         st.markdown(sop["markdown"])
 
-    # ----------------- TAB 4: TASK & TICKET DISPATCHER -----------------
-    with tab4:
+    # ----------------- TAB 8: TASK & TICKET DISPATCHER -----------------
+    with tab8:
         st.markdown("#### Project Management Ticket Dispatcher")
         st.caption("Export extracted tasks formatted with acceptance criteria into Jira, Linear, or ClickUp.")
 
@@ -716,8 +876,8 @@ if st.session_state.last_results:
                 """, unsafe_allow_html=True)
                 st.markdown(t["description"])
 
-    # ----------------- TAB 5: EXECUTIVE COMMS -----------------
-    with tab5:
+    # ----------------- TAB 9: EXECUTIVE COMMS -----------------
+    with tab9:
         st.markdown("#### Executive Communications Hub")
         st.caption("Publish-ready stakeholder communications generated by the Comms Agent.")
 
@@ -731,8 +891,8 @@ if st.session_state.last_results:
             st.text_area("Formatted Markdown Message", value=comms["slack_message"], height=280, key="slack_msg")
             st.caption("Tip: Paste directly into Slack or Microsoft Teams channels.")
 
-    # ----------------- TAB 6: LIVE WEBHOOK & API PUSH -----------------
-    with tab6:
+    # ----------------- TAB 10: LIVE WEBHOOK & API PUSH -----------------
+    with tab10:
         st.markdown("#### ⚡ Live Webhook & Integration Dispatcher")
         st.caption("Supports real HTTP delivery to live Slack Incoming Webhooks, Discord Webhooks, n8n, Make.com, or REST APIs.")
 
